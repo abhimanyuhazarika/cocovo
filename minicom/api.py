@@ -23,7 +23,7 @@ def ping(request):
   unread_messages.append({
       'message_id': question.id,
       'message': question.word+' \n:'+question.meaning,
-      'direction': 'Level-'+str(level)+' \n:'})
+      'direction': str(level)})
 
   return render_to_json({
     'email': user.email,
@@ -84,27 +84,25 @@ def send_message_to_admin(request):
     unread_messages.append({
       'message_id': question.id,
       'message': question.word+' \n:'+question.meaning,
-      'direction': 'Level-'+str(user_level)+' \n:'})
+      'direction': str(user_level)})
 
     return render_to_json({
       'email': user.email,
       'unread_messages': unread_messages,})    
     #return render_to_json({'success': message_text })
   else:
-    user_vocab = UserVocab(user=user, vocab=vocab, is_correct=0)
-    user_vocab.save()
-    return render_to_json({'failed': message_text })
-
-  unread_messages = []
-  question = Vocab.get_vocab_from_level(level=level)
-  unread_messages.append({
+    user = User.get_or_create_from_email(email,'null','null')
+    user_level = user.level
+    unread_messages = []
+    question = Vocab.get_vocab_from_level(level=user_level)
+    unread_messages.append({
       'message_id': question.id,
       'message': question.word+' \n:'+question.meaning,
-      'direction': 'I'})
+      'direction': str(user_level)})
 
-  return render_to_json({
-    'email': user.email,
-    'unread_messages': unread_messages,})
+    return render_to_json({
+      'email': user.email,
+      'unread_messages': unread_messages,})  
 
 
 def n_last_messages(request):

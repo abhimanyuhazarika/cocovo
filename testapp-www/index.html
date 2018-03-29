@@ -66,11 +66,11 @@
           
         <div id="foo" class="col-md-4">
           <div id="chatbar">
-          <b>Answer Questions Here</b>
+          <b>Questions? Ask here</b>
           </div>
           <div>
             <textarea class="form-control" id="older-messages" rows="5" readonly></textarea>
-            <textarea class="form-control" id="message" rows="1" placeholder="Type your answer here"></textarea>
+            <textarea class="form-control" id="message" rows="1" placeholder="Type your queries here"></textarea>
             <input type="hidden" id="message-id" value="null"/>
           </div>
           <div>
@@ -85,7 +85,8 @@
             <div class="modal-dialog">
               <div class="modal-content">
                  <div class="modal-header">
-                    <h3><span class="label label-warning" id="qid">2</span> THREE is CORRECT</h3>
+                 <h3>Level:<span class="label label-warning" id="lid"></span></h3>
+                    <h3 id="qs">Click Begin to Start Test</h3>
                 </div>
                 <div class="modal-body">
                     <div class="col-xs-3 col-xs-offset-5">
@@ -102,10 +103,10 @@
                   </div>
         
                   <div class="quiz" id="quiz" data-toggle="buttons">
-                   <label class="element-animation1 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="1">1 One</label>
-                   <label class="element-animation2 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="2">2 Two</label>
-                   <label class="element-animation3 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="3">3 Three</label>
-                   <label class="element-animation4 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="4">4 Four</label>
+                   <label class="element-animation1 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="1">TRUE</label>
+                   <label class="element-animation2 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">FALSE</label>
+                  <!-- <label class="element-animation3 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">3 Three</label>-->
+                  <!-- <label class="element-animation4 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">4 Four</label>-->
                </div>
            </div>
            <div class="modal-footer text-muted">
@@ -131,8 +132,9 @@
     <script type="text/javascript" src="http://localhost:8000/static/jquery.ui.chatbox.js"></script>
     <style>
       #foo {
-        bottom: -10;
-        right: -10;
+        position: fixed;
+        bottom: 0;
+        right:  0;
       }
       #chatbar {
         background-color: #83de5b57;
@@ -167,14 +169,24 @@
         	$('#loadbar').show();
         	$('#quiz').fadeOut();
         	setTimeout(function(){
-               $( "#answer" ).html(  $(this).checking(choice) );      
+                $( "#answer" ).html(  $(this).checking(choice) );      
                 $('#quiz').show();
                 $('#loadbar').fadeOut();
                /* something else */
-               event.preventDefault();
-               Cocovo.send_admin($.cookie('user'), $('#message').val(),$('#message-id').val());
+               //event.preventDefault();
+               Cocovo.send_admin($.cookie('user'), choice,$('#message-id').val());
         	}, 1500);
         });
+        
+        $ans = 1;
+
+        $.fn.checking = function(ck) {
+        if (ck != $ans)
+            return 'INCORRECT';
+        else 
+            return 'CORRECT';
+        }; 
+        
         $('#send-message').click(function(event) {
           event.preventDefault();
           Cocovo.send_admin($.cookie('user'), $('#message').val(),$('#message-id').val());

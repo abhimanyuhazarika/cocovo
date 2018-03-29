@@ -7,7 +7,8 @@ var Cocovo = {
         //alert(message.message);
         //$("#chat_div").chatbox("option", "boxManager").addMsg("Mr. Foo", message.message);
       });
-        document.getElementById("older-messages").value = response['unread_messages'].map(function(message) {return ("\n" + (message.direction+": "+message.message))});
+        document.getElementById("qs").innerText = response['unread_messages'].map(function(message) {return (message.message)});
+        document.getElementById("lid").innerText = response['unread_messages'].map(function(message) {return (message.direction)});
         document.getElementById("message-id").value = response['unread_messages'].map(function(message) {return ((message.message_id))});
         //alert(document.getElementById("message-id").value);
     });
@@ -28,11 +29,9 @@ var Cocovo = {
       $.each(response['unread_messages'], function(index, message) {
         //alert(message.message);
         //$("#chat_div").chatbox("option", "boxManager").addMsg("Mr. Foo", message.message);
-       // if(message.direction=='O'){
-           // Cocovo.mark_read(user_email, message.message_id);
-        //}
       });
-        document.getElementById("older-messages").value = response['unread_messages'].map(function(message) {return ("\n" + (message.direction+": "+message.message))});
+        document.getElementById("qs").innerText = response['unread_messages'].map(function(message) {return (message.message)});
+        document.getElementById("lid").innerText = response['unread_messages'].map(function(message) {return (message.direction)});
         document.getElementById("message-id").value = response['unread_messages'].map(function(message) {return ((message.message_id))});
         //alert(document.getElementById("message-id").value);
     });
