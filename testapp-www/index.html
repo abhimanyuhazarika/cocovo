@@ -4,7 +4,10 @@
     <title>CoCoVo</title>
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
-
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://apis.google.com/js/client.js" async defer></script>
+    <script src="https://apis.google.com/js/platform.js?onload=renderButton" async defer></script>
+    <meta name="google-signin-client_id" content="111843660877-2aahjqbvq8k53f7odc3t4p1e9sdkpdie.apps.googleusercontent.com">
     <style>
     </style>
   </head>
@@ -23,24 +26,29 @@
         </div>
         <div class="navbar-collapse collapse">
           <form class="navbar-form navbar-right" role="form">
-            <div class="form-group">
+            <div class="form-group" style="display:None">
               <input id="user-name" type="text" placeholder="Name" class="form-control">
               <input id="user-age" type="text" placeholder="Age" class="form-control">
               <input id="user-email" type="text" placeholder="Email" class="form-control">
+              <button id="sign-in" type="submit" class="btn btn-success">Sign in</button>
             </div>
-            <button id="sign-in" type="submit" class="btn btn-success">Sign in</button>
+              <div align="right" id="gSignInButton" class="g-signin2" data-onsuccess="onSignIn"></div>
+            <div id="gSignOutButton" style="display:None">
+             <a href="#" onclick="signOut();" style="align:right">Sign out</a>
+            <img src="" id="user_image" alt="pic" height="42" width="42" align"right"/>
+            </div>
           </form>
         </div><!--/.navbar-collapse -->
       </div>
     </div>
 
-    <div class="jumbotron">
+    <!--<div class="jumbotron">
       <div class="container">
         <h1>Your Adaptive Vocabulary Application</h1>
         <p>Click the button below to begin</p>
         <p><a class="btn btn-primary btn-lg" id="begin" type="submit" >Begin &raquo;</a></p>
       </div>
-    </div>
+    </div>-->
 
        <div class="container">
       <!-- Example row of columns -->
@@ -125,6 +133,7 @@
     <script src="http://localhost:8000/static/cocovo.js"></script>
     <script src="http://localhost:8000/static/cocovolayout.js"></script>
     
+    
     <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js"></script>
     <link type="text/css" href="http://localhost:8000/static/jquery.ui.chatbox.css" rel="stylesheet" />
@@ -135,6 +144,7 @@
         position: fixed;
         bottom: 0;
         right:  0;
+        width: 15%;
       }
       #chatbar {
         background-color: #83de5b57;
@@ -200,7 +210,47 @@
           Cocovo.register($.cookie('user'), null,null);
         }
       });
-
+      
+      function onSignIn(googleUser) {
+      $('#gSignInButton').css('display','none');
+      $('#gSignOutButton').css('display','true');
+      var profile = googleUser.getBasicProfile();
+      //alert(profile.getId());
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      $.cookie('user', profile.getEmail())
+      Cocovo.register($.cookie('user'),profile.getName(),25);
+      $('#user_image').attr("src", profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+      
+      gapi.client.load('plus','v1', function(){
+     var request = gapi.client.plus.people.get({
+       'userId': 'me'
+     });
+     request.execute(function(resp) {
+         alert(resp.gender);
+         if(resp.gender=="male")
+             //$("body").css("background-color","blue");
+             $("body").css('background-image', 'url("http://i63.tinypic.com/29gn3bn.jpg")');
+         console.log('age range: ' + resp.isPlusUser);
+         alert(resp.birthday);
+       console.log('Retrieved profile for:' + resp.displayName);
+     });
+});
+    }
+    
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.disconnect().then(function () { //use auth2.signOut() for app level signout
+          $('#gSignInButton').css('display','true');
+          $('#gSignOutButton').css('display','none');
+          $.cookie("user", null, { path: '/' });
+          location.reload();
+          console.log('User signed out.');
+        });
+      }
+     
     </script>
   </body>
 </html>
