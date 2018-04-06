@@ -20,10 +20,10 @@ var Cocovo = {
   },
    
   //cocovo: used for saving user responses  
-  send_admin: function(user_email, message_text, message_id) {
+  send_admin: function(user_email, message_text, message_id,avg_time) {
     $.post(
         'http://localhost:8000/api/send_admin',
-        {'email': user_email, 'message_text': message_text, 'message_id':message_id}
+        {'email': user_email, 'message_text': message_text, 'message_id':message_id,'avg_time':avg_time}
     )
     .done(function(response) {
       $.each(response['unread_messages'], function(index, message) {
@@ -34,6 +34,9 @@ var Cocovo = {
         document.getElementById("lid").innerText = response['unread_messages'].map(function(message) {return (message.direction)});
         document.getElementById("message-id").value = response['unread_messages'].map(function(message) {return ((message.message_id))});
         //alert(document.getElementById("message-id").value);
+		if(response['unread_messages'].map(function(message) {return ((message.correct_answer_count))})!='null'){
+				        alert(response['unread_messages'].map(function(message) {return ((message.correct_answer_count))}));
+		}
     });
   },
   

@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'corsheaders',
     'minicom',
+	'sslserver',
 )
 
 MIDDLEWARE_CLASSES = (

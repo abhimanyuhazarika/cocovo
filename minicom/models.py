@@ -90,4 +90,12 @@ class UserVocab(models.Model):
   vocab = models.ForeignKey(Vocab)
   is_correct = models.BooleanField()
 
+  @classmethod
+  def get_correct_answers_count(clazz, user_id):
+    return clazz.objects.filter(user_id=user_id, is_correct=1).count()
+
+  @classmethod
+  def get_incorrect_answers_count(clazz, user_id):
+    return clazz.objects.filter(user_id=user_id, is_correct=0).count()
+
 

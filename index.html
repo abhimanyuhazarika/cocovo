@@ -1,0 +1,227 @@
+<!doctype html>
+<html>
+  <head>
+    <title>CoCoVo</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="111843660877-2aahjqbvq8k53f7odc3t4p1e9sdkpdie.apps.googleusercontent.com">
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">CoCoVo</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right" role="form">
+            <div class="form-group">
+              <input id="user-name" type="text" placeholder="Name" class="form-control">
+              <input id="user-age" type="text" placeholder="Age" class="form-control">
+              <input id="user-email" type="text" placeholder="Email" class="form-control">
+            </div>
+            <button id="sign-in" type="submit" class="btn btn-success">Sign in</button>
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <a href="#" onclick="signOut();">Sign out</a>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Your Adaptive Vocabulary Application</h1>
+        <p>Click the button below to begin</p>
+        <p><a class="btn btn-primary btn-lg" id="begin" type="submit" >Begin &raquo;</a></p>
+      </div>
+    </div>
+
+       <div class="container">
+      <!-- Example row of columns -->
+      <div class="row">
+        <h1>Words of the day</h1>
+        <div class="col-md-4">
+          <h2>Hello</h2>
+          <p>A form of expression</p>
+          <!--<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>-->
+        </div>
+        <div class="col-md-4">
+          <h2>Mesmerize</h2>
+          <p>Capture the complete attention of (someone); transfix.</p>
+          <!--<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>-->
+       </div>
+        <div class="col-md-4">
+          <h2>Denigrate</h2>
+          <p>Criticize unfairly; disparage.</p>
+          <!--<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>-->
+        </div>
+
+          
+          
+        <div id="foo" class="col-md-4">
+          <div id="chatbar">
+          <b>Questions? Ask here</b>
+          </div>
+          <div>
+            <textarea class="form-control" id="older-messages" rows="5" readonly></textarea>
+            <textarea class="form-control" id="message" rows="1" placeholder="Type your queries here"></textarea>
+            <input type="hidden" id="message-id" value="null"/>
+          </div>
+          <div>
+            <button type="submit" id="send-message" class="btn btn-default">Send</button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="container">
+      <!--div for new layout of questions -->
+              <div class="container-fluid bg-info">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                 <div class="modal-header">
+                 <h3>Level:<span class="label label-warning" id="lid"></span></h3>
+                    <h3 id="qs">Click Begin to Start Test</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xs-3 col-xs-offset-5">
+                       <div id="loadbar" style="display: none;">
+                          <div class="blockG" id="rotateG_01"></div>
+                          <div class="blockG" id="rotateG_02"></div>
+                          <div class="blockG" id="rotateG_03"></div>
+                          <div class="blockG" id="rotateG_04"></div>
+                          <div class="blockG" id="rotateG_05"></div>
+                          <div class="blockG" id="rotateG_06"></div>
+                          <div class="blockG" id="rotateG_07"></div>
+                          <div class="blockG" id="rotateG_08"></div>
+                      </div>
+                  </div>
+        
+                  <div class="quiz" id="quiz" data-toggle="buttons">
+                   <label class="element-animation1 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="1">TRUE</label>
+                   <label class="element-animation2 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">FALSE</label>
+                  <!-- <label class="element-animation3 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">3 Three</label>-->
+                  <!-- <label class="element-animation4 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">4 Four</label>-->
+               </div>
+           </div>
+           <div class="modal-footer text-muted">
+            <span id="answer"></span>
+        </div>
+        </div>
+        </div>
+        </div>
+        <!--END of div for new layout of questions -->
+     </div>
+     
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.0/jquery.cookie.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="http://localhost:8000/static/cocovo.js"></script>
+    <script src="http://localhost:8000/static/cocovolayout.js"></script>
+    
+    
+    <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js"></script>
+    <link type="text/css" href="http://localhost:8000/static/jquery.ui.chatbox.css" rel="stylesheet" />
+    <link type="text/css" href="http://localhost:8000/static/cocovolayout.css" rel="stylesheet" />
+    <script type="text/javascript" src="http://localhost:8000/static/jquery.ui.chatbox.js"></script>
+    <style>
+      #foo {
+        position: fixed;
+        bottom: 0;
+        right:  0;
+      }
+      #chatbar {
+        background-color: #83de5b57;
+      }
+    </style>
+    <script language="javascript">
+      $('#message').keypress(function (e) {
+          if (e.which == 13) {
+            Cocovo.send_admin($.cookie('user'), $('#message').val(),$('#message-id').val());
+            alert($('#message').val());
+            return false;
+          }
+        });
+      // Set logged-in user email.
+      $(function() {
+        var currentUser = $.cookie('user');
+        if (currentUser) {
+          $('#user-email').val(currentUser);
+        }
+      });
+
+      // Sign-in.
+      $(function() {
+        $('#sign-in').click(function(event) {
+          event.preventDefault();
+          $.cookie('user', $('#user-email').val())
+          Cocovo.register($.cookie('user'),$('#user-name').val(),$('#user-age').val());
+        });
+        
+        $("label.btn").on('click',function () {
+        	var choice = $(this).find('input:radio').val();
+        	$('#loadbar').show();
+        	$('#quiz').fadeOut();
+        	setTimeout(function(){
+                $( "#answer" ).html(  $(this).checking(choice) );      
+                $('#quiz').show();
+                $('#loadbar').fadeOut();
+               /* something else */
+               //event.preventDefault();
+               Cocovo.send_admin($.cookie('user'), choice,$('#message-id').val());
+        	}, 1500);
+        });
+        
+        $ans = 1;
+
+        $.fn.checking = function(ck) {
+        if (ck != $ans)
+            return 'INCORRECT';
+        else 
+            return 'CORRECT';
+        }; 
+        
+        $('#send-message').click(function(event) {
+          event.preventDefault();
+          Cocovo.send_admin($.cookie('user'), $('#message').val(),$('#message-id').val());
+        });
+      });
+
+      // Register with Cocovo.
+      $(function() {
+        if ($.cookie('user')) {
+          //alert("hello5");
+          Cocovo.register($.cookie('user'), null,null);
+        }
+      });
+      
+      function onSignIn(googleUser) {
+      var profile = googleUser.getBasicProfile();
+      alert(profile.getId());
+      console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    }
+    
+  function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+      console.log('User signed out.');
+    });
+  }
+
+
+    </script>
+  </body>
+</html>

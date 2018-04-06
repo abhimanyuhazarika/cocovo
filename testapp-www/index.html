@@ -26,7 +26,7 @@
         </div>
         <div class="navbar-collapse collapse">
           <form class="navbar-form navbar-right" role="form">
-            <div class="form-group" style="display:None">
+            <div class="form-group" style="display:none">
               <input id="user-name" type="text" placeholder="Name" class="form-control">
               <input id="user-age" type="text" placeholder="Age" class="form-control">
               <input id="user-email" type="text" placeholder="Email" class="form-control">
@@ -34,7 +34,7 @@
             </div>
               <div align="right" id="gSignInButton" class="g-signin2" data-onsuccess="onSignIn"></div>
             <div id="gSignOutButton" style="display:None">
-             <a href="#" onclick="signOut();" style="align:right">Sign out</a>
+             <a onclick="signOut();" style="align:right">Sign out</a>
             <img src="" id="user_image" alt="pic" height="42" width="42" align"right"/>
             </div>
           </form>
@@ -69,9 +69,144 @@
           <p>Criticize unfairly; disparage.</p>
           <!--<p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>-->
         </div>
-
-          
-          
+		
+		
+		 <style>
+	  * {
+		font-family: Verdana, Arial, sans-serif;
+	  }
+	  a:link {
+		color:#000;
+		text-decoration: none;
+	  }
+	  a:visited {
+		color:#000;
+	  }
+	  a:hover {
+		color:#33F;
+	  }
+	  .button {
+		background: -webkit-linear-gradient(top,#008dfd 0,#0370ea 100%);
+		border: 1px solid #076bd2;
+		border-radius: 3px;
+		color: #fff;
+		display: none;
+		font-size: 13px;
+		font-weight: bold;
+		line-height: 1.3;
+		padding: 8px 25px;
+		text-align: center;
+		text-shadow: 1px 1px 1px #076bd2;
+		letter-spacing: normal;
+	  }
+	  .center {
+		padding: 10px;
+		text-align: center;
+	  }
+	  .final {
+		color: black;
+		padding-right: 3px; 
+	  }
+	  .interim {
+		color: gray;
+	  }
+	  .info {
+		font-size: 14px;
+		text-align: center;
+		color: #777;
+		display: none;
+	  }
+	  .right {
+		float: right;
+	  }
+	  .sidebyside {
+		display: inline-block;
+		width: 45%;
+		min-height: 40px;
+		text-align: left;
+		vertical-align: top;
+	  }
+	  #headline {
+		font-size: 40px;
+		font-weight: 300;
+	  }
+	  #info {
+		font-size: 20px;
+		text-align: center;
+		color: #777;
+		visibility: hidden;
+	  }
+	  #results {
+		font-size: 14px;
+		font-weight: bold;
+		<!--border: 1px solid #ddd;
+		padding: 15px;-->
+		text-align: left;
+	  }
+	  #start_button {
+		border: 0;
+		background-color:transparent;
+		padding: 0;
+	  }
+	</style>
+	<div style="display:none">
+	<h1 class="center" id="headline">
+	  <a href="http://dvcs.w3.org/hg/speech-api/raw-file/tip/speechapi.html"></a> </h1>
+	<div id="info">
+	  <p id="info_start">Click on the microphone icon and begin speaking.</p>
+	  <p id="info_speak_now">Speak now.</p>
+	  <p id="info_no_speech">No speech was detected. You may need to adjust your
+		<a href="//support.google.com/chrome/bin/answer.py?hl=en&amp;answer=1407892">
+		  microphone settings</a>.</p>
+	  <p id="info_no_microphone" style="display:none">
+		No microphone was found. Ensure that a microphone is installed and that
+		<a href="//support.google.com/chrome/bin/answer.py?hl=en&amp;answer=1407892">
+		microphone settings</a> are configured correctly.</p>
+	  <p id="info_allow">Click the "Allow" button above to enable your microphone.</p>
+	  <p id="info_denied">Permission to use microphone was denied.</p>
+	  <p id="info_blocked">Permission to use microphone is blocked. To change,
+		go to chrome://settings/contentExceptions#media-stream</p>
+	  <p id="info_upgrade">Web Speech API is not supported by this browser.
+		 Upgrade to <a href="//www.google.com/chrome">Chrome</a>
+		 version 25 or later.</p>
+	</div>
+	
+	<div class="center">
+	  <div class="sidebyside" style="text-align:right">
+		<button id="copy_button" class="button" onclick="copyButton()">
+		  Copy and Paste</button>
+		<div id="copy_info" class="info">
+		  Press Control-C to copy text.<br>(Command-C on Mac.)
+		</div>
+	  </div>
+	  <div class="sidebyside">
+		<button id="email_button" class="button" onclick="emailButton()">
+		  Create Email</button>
+		<div id="email_info" class="info">
+		  Text sent to default email application.<br>
+		  (See chrome://settings/handlers to change.)
+		</div>
+	  </div>
+	  <p>
+	  <div id="div_language">
+		<select id="select_language" onchange="updateCountry()"></select>
+		&nbsp;&nbsp;
+		<select id="select_dialect"></select>
+	  </div>
+	</div>
+	</div>
+	      <div id="micButton" style="display:none">
+          <div class="right">
+	  <button id="start_button" onclick="startButton()">
+		<img id="start_img" src="mic.gif" alt="Start"></button>
+	</div>
+	<div id="results">
+	  <span id="final_span" class="final"></span>
+	  <span id="interim_span" class="interim"></span>
+	  <p>
+	</div>
+     </div>
+	 
         <div id="foo" class="col-md-4">
           <div id="chatbar">
           <b>Questions? Ask here</b>
@@ -93,8 +228,8 @@
             <div class="modal-dialog">
               <div class="modal-content">
                  <div class="modal-header">
-                 <h3>Level:<span class="label label-warning" id="lid"></span></h3>
-                    <h3 id="qs">Click Begin to Start Test</h3>
+                 <h3 href="#"><a>Level:<span class="label label-warning" id="lid"></span></a></h3>
+                    <a><h3 id="qs" href="#">Click Begin to Start Test</h3></a>
                 </div>
                 <div class="modal-body">
                     <div class="col-xs-3 col-xs-offset-5">
@@ -111,8 +246,8 @@
                   </div>
         
                   <div class="quiz" id="quiz" data-toggle="buttons">
-                   <label class="element-animation1 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="1">TRUE</label>
-                   <label class="element-animation2 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">FALSE</label>
+                   <label id="radioBtn1" class="element-animation1 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span><input type="radio" name="q_answer" value="1" id="radiobutton1">TRUE</label>
+                   <label class="element-animation2 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span><input type="radio" name="q_answer" value="0" id="radiobutton2">FALSE</label>
                   <!-- <label class="element-animation3 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">3 Three</label>-->
                   <!-- <label class="element-animation4 btn btn-lg btn-primary btn-block"><span class="btn-label"><i class="glyphicon glyphicon-chevron-right"></i></span> <input type="radio" name="q_answer" value="0">4 Four</label>-->
                </div>
@@ -125,6 +260,9 @@
         </div>
         <!--END of div for new layout of questions -->
      </div>
+		 
+		 
+
      
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -135,7 +273,7 @@
     
     
     <!--<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>-->
-    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.2/jquery-ui.js"></script>
     <link type="text/css" href="http://localhost:8000/static/jquery.ui.chatbox.css" rel="stylesheet" />
     <link type="text/css" href="http://localhost:8000/static/cocovolayout.css" rel="stylesheet" />
     <script type="text/javascript" src="http://localhost:8000/static/jquery.ui.chatbox.js"></script>
@@ -170,8 +308,16 @@
       $(function() {
         $('#sign-in').click(function(event) {
           event.preventDefault();
+		  
           $.cookie('user', $('#user-email').val())
           Cocovo.register($.cookie('user'),$('#user-name').val(),$('#user-age').val());
+		   setTimeout(function(){
+		   text =document.getElementById('qs').innerText;
+		   var msg = new SpeechSynthesisUtterance(text);
+		   window.speechSynthesis.speak(msg);
+		   },1000);
+		  startButton();
+		  start = Date.now(); 
         });
         
         $("label.btn").on('click',function () {
@@ -184,7 +330,19 @@
                 $('#loadbar').fadeOut();
                /* something else */
                //event.preventDefault();
-               Cocovo.send_admin($.cookie('user'), choice,$('#message-id').val());
+               end = Date.now();  
+               var elapsed = (end - start) / 1000;  
+               alert("You took " + Math.round(elapsed) + " seconds" + " to type: ");  
+               Cocovo.send_admin($.cookie('user'), choice,$('#message-id').val(), Math.round(elapsed));
+			   setTimeout(function(){
+			   text =document.getElementById('qs').innerText;
+			   var msg = new SpeechSynthesisUtterance(text);
+			   window.speechSynthesis.speak(msg);
+			   },1000);
+			   setTimeout(function(){
+               start = Date.now();
+			   startButton();
+			   },8000);
         	}, 1500);
         });
         
@@ -200,6 +358,11 @@
         $('#send-message').click(function(event) {
           event.preventDefault();
           Cocovo.send_admin($.cookie('user'), $('#message').val(),$('#message-id').val());
+		   setTimeout(function(){
+		   text =document.getElementById('qs').innerText;
+		   var msg = new SpeechSynthesisUtterance(text);
+		   window.speechSynthesis.speak(msg);
+		   },1000);
         });
       });
 
@@ -208,6 +371,18 @@
         if ($.cookie('user')) {
           //alert("hello5");
           Cocovo.register($.cookie('user'), null,null);
+		  if((start-Date.now())>10000)
+		   {
+			   setTimeout(function(){
+			   text =document.getElementById('qs').innerText;
+			   var msg = new SpeechSynthesisUtterance(text);
+			   window.speechSynthesis.speak(msg);
+			   },1000);
+			   setTimeout(function(){
+               start = Date.now();
+			   startButton();
+			   },4000);
+		  }
         }
       });
       
@@ -219,8 +394,7 @@
       console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
       console.log('Name: ' + profile.getName());
       console.log('Image URL: ' + profile.getImageUrl());
-      $.cookie('user', profile.getEmail())
-      Cocovo.register($.cookie('user'),profile.getName(),25);
+      
       $('#user_image').attr("src", profile.getImageUrl());
       console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
       
@@ -229,16 +403,52 @@
        'userId': 'me'
      });
      request.execute(function(resp) {
-         alert(resp.gender);
-         if(resp.gender=="male")
-             //$("body").css("background-color","blue");
-             $("body").css('background-image', 'url("http://i63.tinypic.com/29gn3bn.jpg")');
+         //alert(resp.gender);
+		 //alert(getAge(resp.birthday));
+		 //showInfo('gender');
+         if((resp.gender=="female" && getAge(resp.birthday)>50) || profile.getEmail()=="cpowell11967@gmail.com"){
+		      $("body").css('background-image', 'url("http://i64.tinypic.com/212v3hs.png")');
+			  $('#micButton').show();
+			  resp.birthday='1967-04-01';
+	     }
+		 else if((getAge(resp.birthday)<16) || profile.getEmail()=="ramsharma122112@gmail.com") {
+			$("body").css('background-image', 'url("http://i63.tinypic.com/29gn3bn.jpg")');
+			$('#micButton').show();
+			resp.birthday='2005-04-01';
+		 }
+		 else{
+		 }
          console.log('age range: ' + resp.isPlusUser);
-         alert(resp.birthday);
+		 document.getElementById("user-age").value = 25;//getAge(resp.birthday);
+         //alert(getAge(resp.birthday));
+		 $.cookie('user', profile.getEmail())
+      var msg = new SpeechSynthesisUtterance('Welcome to Cocovo. Your adaptive vocabulary learning app!');
+	  window.speechSynthesis.speak(msg);
+      Cocovo.register($.cookie('user'),profile.getName(),getAge(resp.birthday));
+	   setTimeout(function(){
+	   text =document.getElementById('qs').innerText;
+	   var msg = new SpeechSynthesisUtterance(text);
+	   window.speechSynthesis.speak(msg);
+	   },1000);
+	   setTimeout(function(){
+	   start = Date.now();
+	   startButton();
+	   },15000);
        console.log('Retrieved profile for:' + resp.displayName);
      });
 });
     }
+	
+	function getAge(dateString) {
+		var today = new Date();
+		var birthDate = new Date(dateString);
+		var age = today.getFullYear() - birthDate.getFullYear();
+		var m = today.getMonth() - birthDate.getMonth();
+		if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+			age--;
+		}
+		return age;
+	}
     
       function signOut() {
         var auth2 = gapi.auth2.getAuthInstance();
@@ -252,5 +462,281 @@
       }
      
     </script>
+
+<!--    <script src='//vws.responsivevoice.com/v/e?key=AjoOLINh'></script>-->
+    	<script>
+	var langs =
+	[['Afrikaans',       ['af-ZA']],
+	 ['Bahasa Indonesia',['id-ID']],
+	 ['Bahasa Melayu',   ['ms-MY']],
+	 ['Català',          ['ca-ES']],
+	 ['Čeština',         ['cs-CZ']],
+	 ['Deutsch',         ['de-DE']],
+	 ['English',         ['en-AU', 'Australia'],
+						 ['en-CA', 'Canada'],
+						 ['en-IN', 'India'],
+						 ['en-NZ', 'New Zealand'],
+						 ['en-ZA', 'South Africa'],
+						 ['en-GB', 'United Kingdom'],
+						 ['en-US', 'United States']],
+	 ['Español',         ['es-AR', 'Argentina'],
+						 ['es-BO', 'Bolivia'],
+						 ['es-CL', 'Chile'],
+						 ['es-CO', 'Colombia'],
+						 ['es-CR', 'Costa Rica'],
+						 ['es-EC', 'Ecuador'],
+						 ['es-SV', 'El Salvador'],
+						 ['es-ES', 'España'],
+						 ['es-US', 'Estados Unidos'],
+						 ['es-GT', 'Guatemala'],
+						 ['es-HN', 'Honduras'],
+						 ['es-MX', 'México'],
+						 ['es-NI', 'Nicaragua'],
+						 ['es-PA', 'Panamá'],
+						 ['es-PY', 'Paraguay'],
+						 ['es-PE', 'Perú'],
+						 ['es-PR', 'Puerto Rico'],
+						 ['es-DO', 'República Dominicana'],
+						 ['es-UY', 'Uruguay'],
+						 ['es-VE', 'Venezuela']],
+	 ['Euskara',         ['eu-ES']],
+	 ['Français',        ['fr-FR']],
+	 ['Galego',          ['gl-ES']],
+	 ['Hrvatski',        ['hr_HR']],
+	 ['IsiZulu',         ['zu-ZA']],
+	 ['Íslenska',        ['is-IS']],
+	 ['Italiano',        ['it-IT', 'Italia'],
+						 ['it-CH', 'Svizzera']],
+	 ['Magyar',          ['hu-HU']],
+	 ['Nederlands',      ['nl-NL']],
+	 ['Norsk bokmål',    ['nb-NO']],
+	 ['Polski',          ['pl-PL']],
+	 ['Português',       ['pt-BR', 'Brasil'],
+						 ['pt-PT', 'Portugal']],
+	 ['Română',          ['ro-RO']],
+	 ['Slovenčina',      ['sk-SK']],
+	 ['Suomi',           ['fi-FI']],
+	 ['Svenska',         ['sv-SE']],
+	 ['Türkçe',          ['tr-TR']],
+	 ['български',       ['bg-BG']],
+	 ['Pусский',         ['ru-RU']],
+	 ['Српски',          ['sr-RS']],
+	 ['한국어',            ['ko-KR']],
+	 ['中文',             ['cmn-Hans-CN', '普通话 (中国大陆)'],
+						 ['cmn-Hans-HK', '普通话 (香港)'],
+						 ['cmn-Hant-TW', '中文 (台灣)'],
+						 ['yue-Hant-HK', '粵語 (香港)']],
+	 ['日本語',           ['ja-JP']],
+	 ['Lingua latīna',   ['la']]];
+
+	for (var i = 0; i < langs.length; i++) {
+	  select_language.options[i] = new Option(langs[i][0], i);
+	}
+	select_language.selectedIndex = 6;
+	updateCountry();
+	select_dialect.selectedIndex = 6;
+	showInfo('info_start');
+
+	function updateCountry() {
+	  for (var i = select_dialect.options.length - 1; i >= 0; i--) {
+		select_dialect.remove(i);
+	  }
+	  var list = langs[select_language.selectedIndex];
+	  for (var i = 1; i < list.length; i++) {
+		select_dialect.options.add(new Option(list[i][1], list[i][0]));
+	  }
+	  select_dialect.style.visibility = list[1].length == 1 ? 'hidden' : 'visible';
+	}
+
+	var create_email = false;
+	var final_transcript = '';
+	var recognizing = false;
+	var ignore_onend;
+	var start_timestamp;
+	if (!('webkitSpeechRecognition' in window)) {
+	  upgrade();
+	} else {
+	  start_button.style.display = 'inline-block';
+	  var recognition = new webkitSpeechRecognition();
+	  recognition.continuous = false;
+	  recognition.interimResults = false;
+
+	  recognition.onstart = function() {
+		recognizing = true;
+		showInfo('info_speak_now');
+		start_img.src = 'mic-animate.gif';
+	  };
+
+	  recognition.onerror = function(event) {
+		if (event.error == 'no-speech') {
+		  start_img.src = 'mic.gif';
+		  showInfo('info_no_speech');
+		  ignore_onend = true;
+		}
+		if (event.error == 'audio-capture') {
+		  start_img.src = 'mic.gif';
+		  showInfo('info_no_microphone');
+		  ignore_onend = true;
+		}
+		if (event.error == 'not-allowed') {
+		  if (false) {
+			showInfo('info_blocked');
+		  } else {
+			showInfo('info_denied');
+		  }
+		  ignore_onend = true;
+		}
+	  };
+
+	  recognition.onend = function() {
+		recognizing = false;
+		if (ignore_onend) {
+		  return;
+		}
+		start_img.src = 'mic.gif';
+		if (!final_transcript) {
+		  showInfo('info_start');
+		  return;
+		}
+		showInfo('');
+		if (window.getSelection) {
+		  window.getSelection().removeAllRanges();
+		  var range = document.createRange();
+		  range.selectNode(document.getElementById('final_span'));
+		  window.getSelection().addRange(range);
+		}
+		if (create_email) {
+		  create_email = false;
+		  createEmail();
+		}
+	  };
+
+	  recognition.onresult = function(event) {
+		var interim_transcript = '';
+		for (var i = event.resultIndex; i < event.results.length; ++i) {
+		  if (event.results[i].isFinal) {
+			final_transcript += event.results[i][0].transcript;
+		  } else {
+			interim_transcript += event.results[i][0].transcript;
+		  }
+		}
+		final_transcript = capitalize(final_transcript);
+		final_span.innerHTML = linebreak(final_transcript);
+		interim_span.innerHTML = linebreak(interim_transcript);
+		if (final_transcript || interim_transcript) {
+		  alert(final_transcript);
+		  radiobtn = document.getElementById("radioBtn1");
+		  radiobtn.checked = true;
+		  radiobtn.click();
+		  if(final_transcript.includes("true") || final_transcript.includes("True") || final_transcript.includes("correct") || final_transcript.includes("right") || final_transcript.includes("Yes") )
+		  {
+			var msg = new SpeechSynthesisUtterance('That\'s correct');
+			window.speechSynthesis.speak(msg);
+		  }
+		  else{
+		  		var msg = new SpeechSynthesisUtterance('Oops That\'s incorrect');
+				window.speechSynthesis.speak(msg);
+		  }
+		  showButtons('inline-block');
+		}
+	  };
+	}
+
+	function upgrade() {
+	  start_button.style.visibility = 'hidden';
+	  showInfo('info_upgrade');
+	}
+
+	var two_line = /\n\n/g;
+	var one_line = /\n/g;
+	function linebreak(s) {
+	  return s.replace(two_line, '<p></p>').replace(one_line, '<br>');
+	}
+
+	var first_char = /\S/;
+	function capitalize(s) {
+	  return s.replace(first_char, function(m) { return m.toUpperCase(); });
+	}
+
+	function createEmail() {
+	  var n = final_transcript.indexOf('\n');
+	  if (n < 0 || n >= 80) {
+		n = 40 + final_transcript.substring(40).indexOf(' ');
+	  }
+	  var subject = encodeURI(final_transcript.substring(0, n));
+	  var body = encodeURI(final_transcript.substring(n + 1));
+	  window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+	}
+
+	function copyButton() {
+	  if (recognizing) {
+		recognizing = false;
+		recognition.stop();
+	  }
+	  copy_button.style.display = 'none';
+	  copy_info.style.display = 'inline-block';
+	  showInfo('');
+	}
+
+	function emailButton() {
+	  if (recognizing) {
+		create_email = true;
+		recognizing = false;
+		recognition.stop();
+	  } else {
+		createEmail();
+	  }
+	  email_button.style.display = 'none';
+	  email_info.style.display = 'inline-block';
+	  showInfo('');
+	}
+
+	function startButton() {
+	  if (recognizing) {
+		recognition.stop();
+		return;
+	  }
+	  final_transcript = '';
+	  recognition.lang = select_dialect.value;
+	  recognition.start();
+	  ignore_onend = false;
+	  final_span.innerHTML = '';
+	  interim_span.innerHTML = '';
+	  start_img.src = 'mic-slash.gif';
+	  showInfo('info_allow');
+	  showButtons('none');
+	  //start_timestamp = event.timeStamp;
+	}
+
+	function showInfo(s) {
+	  if (s) {
+		for (var child = info.firstChild; child; child = child.nextSibling) {
+		  if (child.style) {
+			child.style.display = child.id == s ? 'inline' : 'none';
+		  }
+		}
+		info.style.visibility = 'visible';
+	  } else {
+		info.style.visibility = 'hidden';
+	  }
+	}
+
+	var current_style;
+	function showButtons(style) {
+	  if (style == current_style) {
+		return;
+	  }
+	  current_style = style;
+	  copy_button.style.display = style;
+	  email_button.style.display = style;
+	  copy_info.style.display = 'none';
+	  email_info.style.display = 'none';
+	}
+
+	speechSynthesis.getVoices().forEach(function(voice) {
+	console.log('hello');
+	  console.log(voice.name, voice.default ? voice.default :'');
+	});
+	</script>
   </body>
 </html>

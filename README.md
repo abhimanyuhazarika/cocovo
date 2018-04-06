@@ -38,7 +38,8 @@ CREATE TRIGGER IF NOT EXISTS UPDATE_CORRECT_ANSWERS AFTER INSERT ON minicom_user
 trigger for user level update
 CREATE TRIGGER IF NOT EXISTS UPDATE_USER_LEVEL AFTER UPDATE OF correct_answers ON minicom_user FOR EACH ROW WHEN NEW.CORRECT_ANSWERS/NEW.LEVEL=10 BEGIN UPDATE minicom_user SET level=OLD.level + 1 WHERE id =NEW.id; END;
 
-
+CREATE TRIGGER UPDATE_USER_LEVEL AFTER UPDATE OF correct_answers ON minicom_user FOR EACH ROW WHEN (NEW.CORRECT_ANSWERS/NEW.LEVEL=3 AND NEW.AVG_TIME<5) OR (NEW.CORRECT_ANSWERS/NEW.LEVEL=2 AND NEW.AVG_TIME<3) BEGIN UPDATE minicom_user SET level=OLD.level + 1 WHERE id =NEW.id; END;
+COMMIT;
 
 
 
@@ -58,3 +59,4 @@ IF TWO SYNONYMS ARE ANSWERED THEN NO MORE SYNONYMS
 levels different for different age group 
 
 name, age ,gender, email, interest area sign up form
+interest area + if answers wrong, then probability increases

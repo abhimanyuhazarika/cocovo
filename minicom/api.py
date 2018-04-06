@@ -65,6 +65,7 @@ def send_message_to_admin(request):
   email = request.POST.get('email', None)
   message_text = request.POST.get('message_text', None)
   vocab_id = request.POST.get('message_id', None)
+  avg_time = request.POST.get('avg_time',None)
   if not email:
     return render_to_json({'error': 'Missing required parameter: email.'}, status=400)
   if not message_text:
@@ -77,14 +78,21 @@ def send_message_to_admin(request):
   if vocab_is_true and message_text=='1':
     user_vocab = UserVocab(user=user, vocab=vocab, is_correct=1)
     user_vocab.save()
-    user = User.get_or_create_from_email(email,'null','null')
+    #userUpdt = User.get_or_create_from_email(email,'null','null')
+    calAvgTime = int(int(user.avg_time+int(avg_time))/2)
+    User.objects.filter(email=email).update(avg_time=calAvgTime)
     user_level = user.level
     unread_messages = []
+    correctAnsCount = UserVocab.get_correct_answers_count(user_id=user.id)
+    slowPace = 'null'
+    if calAvgTime>3 and (correctAnsCount/user_level)==3:
+        slowPace="your pace is slower than expected"
     question = Vocab.get_vocab_from_level(level=user_level)
     unread_messages.append({
       'message_id': question.id,
       'message': question.word+' \n:'+question.meaning,
-      'direction': str(user_level)})
+      'direction': str(user_level),
+      'correct_answer_count':slowPace})
 
     return render_to_json({
       'email': user.email,
@@ -92,13 +100,16 @@ def send_message_to_admin(request):
     #return render_to_json({'success': message_text })
   else:
     user = User.get_or_create_from_email(email,'null','null')
+    user_vocab = UserVocab(user=user, vocab=vocab, is_correct=0)
+    user_vocab.save()
     user_level = user.level
     unread_messages = []
     question = Vocab.get_vocab_from_level(level=user_level)
     unread_messages.append({
       'message_id': question.id,
       'message': question.word+' \n:'+question.meaning,
-      'direction': str(user_level)})
+      'direction': str(user_level),
+      'correct_answer_count':str(UserVocab.get_incorrect_answers_count(user_id=user.id))})
 
     return render_to_json({
       'email': user.email,
